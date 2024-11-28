@@ -4,7 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caesar Cipher Tool</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin: 5px 0;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #f4f4f4;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Caesar Cipher Tool with Frequency Analysis</h1>
@@ -23,6 +55,54 @@
     <h2>Output:</h2>
     <div id="output"></div>
 
-    <script src="script.js"></script>
+    <script>
+        // Get DOM elements
+        const inputText = document.getElementById("inputText");
+        const shiftInput = document.getElementById("shift");
+        const output = document.getElementById("output");
+
+        // Caesar Cipher Encrypt Function
+        function caesarCipher(text, shift) {
+            return text.replace(/[a-zA-Z]/g, char => {
+                const base = char.charCodeAt(0) < 97 ? 65 : 97; // Uppercase or lowercase
+                return String.fromCharCode(((char.charCodeAt(0) - base + shift) % 26) + base);
+            });
+        }
+
+        // Encrypt Text
+        function encryptText() {
+            const text = inputText.value;
+            const shift = parseInt(shiftInput.value);
+            const encrypted = caesarCipher(text, shift);
+            output.textContent = `Encrypted Text:\n${encrypted}`;
+        }
+
+        // Decrypt Text
+        function decryptText() {
+            const text = inputText.value;
+            const shift = parseInt(shiftInput.value);
+            const decrypted = caesarCipher(text, 26 - shift); // Decrypt by reversing the shift
+            output.textContent = `Decrypted Text:\n${decrypted}`;
+        }
+
+        // Analyze Frequency
+        function analyzeFrequency() {
+            const text = inputText.value.toUpperCase().replace(/[^A-Z]/g, ""); // Remove non-letters
+            const frequency = {};
+            for (let char of text) {
+                frequency[char] = (frequency[char] || 0) + 1;
+            }
+
+            // Sort by frequency
+            const sortedFrequency = Object.entries(frequency).sort((a, b) => b[1] - a[1]);
+
+            // Display results
+            let result = "Letter Frequency:\n";
+            sortedFrequency.forEach(([char, count]) => {
+                result += `${char}: ${count}\n`;
+            });
+            output.textContent = result;
+        }
+    </script>
 </body>
 </html>
